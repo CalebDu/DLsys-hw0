@@ -151,7 +151,25 @@ def nn_epoch(X, y, W1, W2, lr=0.1, batch=100):
         None
     """
     ### BEGIN YOUR CODE
-    pass
+    n, n_class = len(y), np.max(y) + 1
+    for i in range(0, n, batch):
+        img = X[i:i + batch, :]
+        label = y[i:i + batch]
+
+        Iy = np.zeros((batch, n_class))
+        Iy[range(batch), label] = 1
+
+        Z1 = np.maximum(img @ W1, 0)
+        mm = np.exp(Z1 @ W2)
+        G2 = mm / np.sum(mm, axis=1, keepdims=True) - Iy
+
+        G1 = (Z1 > 0) * (G2 @ W2.T)
+        d_W1 = (img.T @ G1) / batch
+        d_W2 = (Z1.T @ G2) / batch
+
+        W1 -= lr * d_W1
+        W2 -= lr * d_W2
+
     ### END YOUR CODE
 
 
@@ -215,8 +233,8 @@ if __name__ == "__main__":
     X_te, y_te = parse_mnist("data/t10k-images-idx3-ubyte.gz",
                              "data/t10k-labels-idx1-ubyte.gz")
 
-    print("Training softmax regression")
-    train_softmax(X_tr, y_tr, X_te, y_te, epochs=10, lr=0.1)
+    # print("Training softmax regression")
+    # train_softmax(X_tr, y_tr, X_te, y_te, epochs=10, lr=0.1)
 
     print("\nTraining two layer neural network w/ 100 hidden units")
     train_nn(X_tr, y_tr, X_te, y_te, hidden_dim=100, epochs=20, lr=0.2)
