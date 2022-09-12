@@ -52,14 +52,14 @@ def parse_mnist(image_filesname, label_filename):
     ### BEGIN YOUR CODE
     with gzip.open(image_filesname) as file:
         magic, num, rows, cols = struct.unpack(">IIII", file.read(16))
-        images =  np.fromstring(file.read(), dtype=np.uint8).reshape(-1, 784)
+        images = np.fromstring(file.read(), dtype=np.uint8).reshape(-1, 784)
 
     with gzip.open(label_filename) as file:
         magic, n = struct.unpack(">II", file.read(8))
         labels = np.fromstring(file.read(), dtype=np.uint8)
-    
-    # normalize 
-    images  = np.float32(images)/255.
+
+    # normalize
+    images = np.float32(images) / 255.
 
     return [images, labels]
     ### END YOUR CODE
@@ -82,7 +82,7 @@ def softmax_loss(Z, y):
     """
     ### BEGIN YOUR CODE
     n = Z.shape[0]
-    zy = Z[range(n),y]
+    zy = Z[range(n), y]
     loss = np.log(np.sum(np.exp(Z), axis=1)).sum() - np.sum(zy)
     loss /= n
     return loss
@@ -110,7 +110,21 @@ def softmax_regression_epoch(X, y, theta, lr=0.1, batch=100):
         None
     """
     ### BEGIN YOUR CODE
-    pass
+
+    n = X.shape[0]
+    n_class = np.max(y) + 1
+    for i in range(0, n, batch):
+        img = X[i:i + batch, :]
+        label = y[i:i + batch]
+
+        mm = np.exp(img @ theta)
+
+        Iy = np.zeros((batch, n_class))
+        Iy[range(0, batch), label] = 1
+
+        Z = mm / np.sum(mm, axis=1, keepdims=True)
+        d_theta = (img.T @ (Z - Iy)) / batch
+        theta -= lr * d_theta
     ### END YOUR CODE
 
 
