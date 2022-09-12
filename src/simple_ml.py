@@ -1,3 +1,5 @@
+from cProfile import label
+from email.mime import image
 import struct
 import numpy as np
 import gzip
@@ -48,7 +50,18 @@ def parse_mnist(image_filesname, label_filename):
                 for MNIST will contain the values 0-9.
     """
     ### BEGIN YOUR CODE
-    pass
+    with gzip.open(image_filesname) as file:
+        magic, num, rows, cols = struct.unpack(">IIII", file.read(16))
+        images =  np.fromstring(file.read(), dtype=np.uint8).reshape(-1, 784)
+
+    with gzip.open(label_filename) as file:
+        magic, n = struct.unpack(">II", file.read(8))
+        labels = np.fromstring(file.read(), dtype=np.uint8)
+    
+    # normalize 
+    images  = np.float32(images)/255.
+
+    return [images, labels]
     ### END YOUR CODE
 
 
