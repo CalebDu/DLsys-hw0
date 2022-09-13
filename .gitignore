@@ -1,3 +1,4 @@
-./src/__pycache__/*
-./tests/__pycache__/*
-./.vscode/*
+/.vscode
+/src/__pycache__
+/src/simple_ml_ext.so
+/tests/__pycache__
