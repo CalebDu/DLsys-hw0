@@ -1,3 +1,4 @@
+import copy
 import numpy as np
 import sys
 import numdifftools as nd
@@ -182,7 +183,11 @@ def test_softmax_regression_epoch_cpp():
     X,y = parse_mnist("data/train-images-idx3-ubyte.gz",
                       "data/train-labels-idx1-ubyte.gz")
     theta = np.zeros((X.shape[1], y.max()+1), dtype=np.float32)
+    th_cp = copy.deepcopy(theta)
+    
     softmax_regression_epoch_cpp(X[:100], y[:100], theta, lr=0.1, batch=10)
+    softmax_regression_epoch(X[:100], y[:100], th_cp, lr=0.1, batch=10)
+    np.testing.assert_allclose(theta, th_cp, rtol=1e-5, atol=1e-5)
     np.testing.assert_allclose(np.linalg.norm(theta), 1.0947356, 
                                rtol=1e-5, atol=1e-5)
 

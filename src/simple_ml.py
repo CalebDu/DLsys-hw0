@@ -6,7 +6,7 @@ import gzip
 try:
     from simple_ml_ext import *
 except:
-    pass
+    print("fail to load cpp so")
 
 
 def add(x, y):
@@ -233,8 +233,8 @@ if __name__ == "__main__":
     X_te, y_te = parse_mnist("data/t10k-images-idx3-ubyte.gz",
                              "data/t10k-labels-idx1-ubyte.gz")
 
-    # print("Training softmax regression")
-    # train_softmax(X_tr, y_tr, X_te, y_te, epochs=10, lr=0.1)
+    print("Training softmax regression")
+    train_softmax(X_tr, y_tr, X_te, y_te, epochs=10, lr=0.1, batch=10)
 
     print("\nTraining two layer neural network w/ 100 hidden units")
     train_nn(X_tr, y_tr, X_te, y_te, hidden_dim=100, epochs=20, lr=0.2)
